@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판</title>
+    <link rel="stylesheet" href="style.css"> <!-- 스타일 파일 경로 수정 -->
+</head>
+<body>
+    <!-- 게시판 목록 페이지 -->
+    <div class="board-list" id="boardListPage">
+        <h1>자유게시판</h1>
+        <div class="search-box">
+            <select id="filter">
+                <option value="all">전체</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+            <button onclick="search()">검색</button>
+            <button onclick="showWritePage()">글쓰기</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>첨부파일</th>
+                    <th>조회수</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody id="boardList">
+                <!-- 게시글 목록 표시 부분 -->
+            </tbody>
+        </table>
+        <div class="pagination">
+            <button onclick="prevPage()">«</button>
+            <span id="currentPage">1</span>
+            <button onclick="nextPage()">»</button>
+        </div>
+    </div>
+
+    <!-- 글쓰기 페이지 -->
+    <div class="write-page" id="writePage" style="display: none;">
+        <h1>자유게시판 글쓰기</h1>
+        <input type="text" placeholder="작성자 이름을 입력하세요" id="authorName">
+        <input type="text" placeholder="제목을 입력하세요" id="title">
+        <textarea placeholder="내용을 입력하세요" id="content"></textarea>
+        <div class="file-upload" id="fileUploadContainer">
+            <input type="file" id="fileUpload" style="display: none;" onchange="displayFileName()">
+            <p>첨부파일을 여기에 드래그하여 놓으세요</p>
+            <p id="fileNameDisplay"></p> <!-- 파일명을 표시할 요소 -->
+        </div>
+        <div class="button-container">
+            <button class="save-button" onclick="savePost()">저장</button>
+            <button class="cancel-button" onclick="showBoardListPage()">취소</button>
+        </div>
+    </div>
+
+    <!-- 글 상세보기 페이지 -->
+    <div class="post-detail-page" id="postDetailPage" style="display: none;">
+        <h1>자유게시판</h1>
+        <table>
+            <tr>
+                <td colspan="2" id="postTitle" style="font-weight: bold; font-size: 24px;">제목</td>
+            </tr>
+            <tr>
+                <td style="width: 150px;">작성자: </td>
+                <td id="postAuthor">작성자명</td>
+            </tr>
+            <tr>
+                <td>등록일: </td>
+                <td id="postDate">날짜</td>
+            </tr>
+            <tr>
+                <td>조회수: </td>
+                <td id="postViews">조회수</td>
+            </tr>
+            <tr>
+                <td colspan="2" id="postContent" style="text-align:left;">내용</td>
+            </tr>
+            <tr>
+                <td colspan="2" id="attachments">
+                    <h3>첨부파일</h3>
+                    <ul id="attachmentList"></ul>
+                </td>
+            </tr>
+        </table>
+        <div class="buttons">
+            <button class="list-button" onclick="goToList()" style="float:left;">목록</button>
+            <div style="float:right;">
+                <button class="modify-button" onclick="modifyPost()">수정</button>
+                <button class="delete-button2" onclick="deleteCurrentPost()">삭제</button>
+                <button class="write-button" onclick="showWritePage()">글쓰기</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="frontend.js"></script> <!-- JS 파일 경로 수정 -->
+</body>
+</html>
