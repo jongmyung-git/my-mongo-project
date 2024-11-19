@@ -4,7 +4,7 @@ let currentPostId; // 현재 보고 있는 글의 ID 저장 변수
 
 // 게시글 목록 표시 함수
 async function displayBoardList() {
-    const response = await fetch('http://localhost:5000/posts');
+    const response = await fetch('https://my-mongo-project.onrender.com/');
     const posts = await response.json();
     
     const boardList = document.getElementById('boardList');
@@ -67,13 +67,13 @@ async function savePost() {
 
     if (currentPostId) {
         // 수정 요청
-        await fetch(`http://localhost:5000/posts/${currentPostId}`, {
+        await fetch(`https://my-mongo-project.onrender.com/posts/${currentPostId}`, {
             method: 'PUT',
             body: formData
         });
     } else {
         // 새 글 작성
-        await fetch('http://localhost:5000/posts', {
+        await fetch('https://my-mongo-project.onrender.com/posts', {
             method: 'POST',
             body: formData
         });
@@ -85,7 +85,7 @@ async function savePost() {
 // 게시글 삭제 함수
 async function deletePost(id) {
     if (confirm("정말 삭제하시겠습니까?")) {
-        await fetch(`http://localhost:5000/posts/${id}`, {
+        await fetch(`https://my-mongo-project.onrender.com/posts/${id}`, {
             method: 'DELETE'
         });
         showBoardListPage();
@@ -94,11 +94,11 @@ async function deletePost(id) {
 
 // 게시글 상세보기 함수
 async function viewPost(id) {
-    const response = await fetch(`http://localhost:5000/posts/${id}`);
+    const response = await fetch(`https://my-mongo-project.onrender.com/posts/${id}`);
     const post = await response.json();
 
     post.views += 1; // 조회수 증가
-    await fetch(`http://localhost:5000/posts/${id}`, {
+    await fetch(`https://my-mongo-project.onrender.com/posts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(post)
@@ -147,7 +147,7 @@ function modifyPost() {
 // 검색 기능
 async function search() {
     const searchInput = document.getElementById('searchInput').value;
-    const response = await fetch(`http://localhost:5000/posts/search?query=${searchInput}`);
+    const response = await fetch(`https://my-mongo-project.onrender.com/posts/search?query=${searchInput}`);
     const filteredPosts = await response.json();
     displayFilteredBoardList(filteredPosts);
 }
@@ -216,5 +216,8 @@ function goToList() {
     document.getElementById('boardListPage').style.display = 'block';
     displayBoardList();
 }
+
+
+
 
 

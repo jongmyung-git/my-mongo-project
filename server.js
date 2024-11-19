@@ -14,7 +14,6 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-
 // 게시글 데이터 모델 설정
 const postSchema = new mongoose.Schema({
   author: { type: String, required: true },
@@ -43,16 +42,10 @@ const storage = multer.diskStorage({
   },
 });
 
-const allowedFileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+// 파일 형식 제한 없이 모든 파일을 허용
 const upload = multer({
   storage: storage,
-  fileFilter: (req, file, cb) => {
-    if (allowedFileTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('지원하지 않는 파일 형식입니다.'));
-    }
-  },
+  // fileFilter 부분 제거하여 모든 파일 허용
 });
 
 // 미들웨어 설정
@@ -125,6 +118,8 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
 
 
 
