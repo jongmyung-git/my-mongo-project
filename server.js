@@ -28,7 +28,7 @@ const postSchema = new mongoose.Schema({
 const Post = mongoose.model('Post', postSchema);
 
 // 업로드 폴더 확인 및 생성
-const uploadDir = path.join(__dirname, 'uploads');
+const uploadDir = path.resolve('uploads'); // 루트 디렉토리에서 'uploads' 폴더로 지정
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
