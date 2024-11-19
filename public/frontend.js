@@ -217,8 +217,4 @@ function goToList() {
     displayBoardList();
 }
 
-// 고유 ID 생성 함수 (현재 서버 사용 시 필요 없음)
-function generateUniqueId() {
-    return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
-}
 
