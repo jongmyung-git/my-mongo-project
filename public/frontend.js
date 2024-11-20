@@ -4,7 +4,7 @@ let currentPostId; // 현재 보고 있는 글의 ID 저장 변수
 
 // 게시글 목록 표시 함수
 async function displayBoardList() {
-    const response = await fetch('https://my-mongo-project.onrender.com/');
+    const response = await fetch(`https://my-mongo-project.onrender.com/posts?page=${currentPage}`);
     const posts = await response.json();
     
     const boardList = document.getElementById('boardList');
@@ -14,7 +14,7 @@ async function displayBoardList() {
         const row = document.createElement('tr');
         
         row.innerHTML = `
-            <td class="col-1">${index + 1}</td>
+            <td class="col-1">${(currentPage - 1) * 10 + (index + 1)}</td>
             <td class="col-2"><a href="#" onclick="viewPost('${post._id}')">${post.title}</a></td>
             <td class="col-3">${post.author}</td>
             <td class="col-4">${new Date(post.date).toLocaleDateString()}</td>
@@ -164,7 +164,7 @@ function displayFilteredBoardList(filteredPosts) {
             <td>${index + 1}</td>
             <td><a href="#" onclick="viewPost('${post._id}')">${post.title}</a></td>
             <td>${post.author}</td>
-            <td>${post.date}</td>
+            <td>${new Date(post.date).toLocaleDateString()}</td>
             <td>${post.file ? '첨부파일' : '-'}</td>
             <td>${post.views}</td>
             <td><button onclick="deletePost('${post._id}')">삭제</button></td>

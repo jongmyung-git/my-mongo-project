@@ -12,14 +12,14 @@ const PORT = process.env.PORT || 5000;
 // MongoDB 연결
 if (!process.env.MONGODB_URI) {
   console.error('Error: MONGODB_URI 환경 변수가 설정되지 않았습니다.');
-  process.exit(1); // 환경 변수 누락 시 프로세스 종료
+  process.exit(1);
 }
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
-    process.exit(1); // MongoDB 연결 실패 시 프로세스 종료
+    process.exit(1);
   });
 
 // 게시글 데이터 모델 설정
@@ -53,14 +53,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // 미들웨어 설정
-app.use(cors({
-  origin: '*', // 특정 도메인만 허용하려면 ['http://example.com']로 변경
-  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(uploadDir)); // 업로드 파일 제공
+app.use('/uploads', express.static(uploadDir)); // 업로드된 파일 제공
 
 // API 라우팅
 
@@ -87,7 +83,7 @@ app.post('/posts', upload.single('file'), async (req, res, next) => {
   }
 });
 
-// 게시글 상세 조회 (조회수 증가 포함)
+// 게시글 상세 조회
 app.get('/posts/:id', async (req, res, next) => {
   try {
     const post = await Post.findByIdAndUpdate(
@@ -127,8 +123,10 @@ app.use((err, req, res, next) => {
 
 // 서버 시작
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  const baseUrl = process.env.PORT ? `https://my-mongo-project.onrender.com` : `http://localhost:${PORT}`;
+  console.log(`Server running at ${baseUrl}`);
 });
+
 
 
 
