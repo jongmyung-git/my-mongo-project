@@ -5,6 +5,7 @@ const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
 const Post = require('./models/Post');  // Post 모델을 사용합니다.
+require('dotenv').config();  // .env 파일을 로드하여 환경 변수 사용
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,7 +15,8 @@ const server = http.createServer(app);
 const io = socketIo(server);  // socket.io 연결
 
 // MongoDB 연결
-mongoose.connect('mongodb://your_mongo_url', { useNewUrlParser: true, useUnifiedTopology: true })
+const mongoURI = process.env.MONGODB_URI;  // .env에서 MongoDB URI 가져오기
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
@@ -26,10 +28,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Multer 설정 (파일 업로드)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, 'uploads/');  // 파일을 'uploads' 폴더에 저장
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, Date.now() + path.extname(file.originalname));  // 고유한 파일명으로 저장
   }
 });
 const upload = multer({ storage: storage });
@@ -37,7 +39,7 @@ const upload = multer({ storage: storage });
 // 게시글 목록 조회 API
 app.get('/posts', async (req, res) => {
   try {
-    const posts = await Post.find().sort({ date: -1 });
+    const posts = await Post.find().sort({ date: -1 });  // 최신 글 순으로 정렬
     res.json(posts);
   } catch (err) {
     res.status(500).send('Error retrieving posts');
