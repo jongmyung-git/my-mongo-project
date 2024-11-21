@@ -101,7 +101,7 @@ async function viewPost(id) {
     const post = await response.json();
 
     post.views += 1; // 조회수 증가
-    await fetch(`${SERVER_URL}/posts/${id}`, {
+    await fetch(`${SERVER_URL}/posts/${id}/views`, {  // Use the correct endpoint to increment views
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(post)
@@ -223,6 +223,7 @@ function goToList() {
     document.getElementById('boardListPage').style.display = 'block';
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 

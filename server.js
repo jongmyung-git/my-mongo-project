@@ -145,6 +145,19 @@ app.delete('/posts/:id', async (req, res) => {
   }
 });
 
+// 게시글 상세 조회 API (추가된 부분)
+app.get('/posts/:id', async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);  // :id에 해당하는 게시글을 찾음
+    if (!post) {
+      return res.status(404).send('Post not found');
+    }
+    res.json(post);  // 게시글을 클라이언트에 반환
+  } catch (err) {
+    res.status(500).send('Error retrieving post');
+  }
+});
+
 // 검색 기능 API
 app.get('/posts/search', async (req, res) => {
   try {
@@ -166,4 +179,5 @@ app.get('/posts/search', async (req, res) => {
 server.listen(port, () => {
   console.log(`Server running on ${process.env.PORT || 'http://localhost:5000'}`);
 });
+
 
