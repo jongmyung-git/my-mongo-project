@@ -2,13 +2,16 @@
 let currentPage = 1;
 let currentPostId; // 현재 보고 있는 글의 ID 저장 변수
 
+// 서버 URL (로컬 서버 주소)
+const SERVER_URL = 'https://my-mongo-project.onrender.com';  // 로컬 서버 주소로 수정
+
 // 게시글 목록 표시 함수
 async function displayBoardList() {
-    const response = await fetch(`https://my-mongo-project.onrender.com/posts?page=${currentPage}`);
+    const response = await fetch(`${SERVER_URL}/posts?page=${currentPage}`);
     const posts = await response.json();
     
     const boardList = document.getElementById('boardList');
-    boardList.innerHTML = '';
+    boardList.innerHTML = ''; // 기존 목록 초기화
 
     posts.forEach((post, index) => {
         const row = document.createElement('tr');
@@ -23,13 +26,13 @@ async function displayBoardList() {
             <td class="col-7"><button class="delete-button" onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
-        boardList.appendChild(row);
+        boardList.appendChild(row); // 게시글 목록에 추가
     });
 }
 
 // 글쓰기 페이지 표시 함수
 function showWritePage() {
-    currentPostId = null; // 새로운 글을 작성할 때는 currentPostId를 초기화
+    currentPostId = null; // 새로운 글을 작성할 때는 currentPostId 초기화
     document.getElementById('boardListPage').style.display = 'none';
     document.getElementById('postDetailPage').style.display = 'none';
     document.getElementById('writePage').style.display = 'block';
@@ -47,7 +50,7 @@ function showBoardListPage() {
     document.getElementById('writePage').style.display = 'none';
     document.getElementById('postDetailPage').style.display = 'none';
     document.getElementById('boardListPage').style.display = 'block';
-    displayBoardList();
+    displayBoardList(); // 게시글 목록 새로고침
 }
 
 // 게시글 저장 함수
@@ -67,38 +70,38 @@ async function savePost() {
 
     if (currentPostId) {
         // 수정 요청
-        await fetch(`https://my-mongo-project.onrender.com/posts/${currentPostId}`, {
+        await fetch(`${SERVER_URL}/posts/${currentPostId}`, {
             method: 'PUT',
             body: formData
         });
     } else {
         // 새 글 작성
-        await fetch('https://my-mongo-project.onrender.com/posts', {
+        await fetch(`${SERVER_URL}/posts`, {
             method: 'POST',
             body: formData
         });
     }
 
-    showBoardListPage();
+    showBoardListPage(); // 게시글 목록 페이지로 돌아가기
 }
 
 // 게시글 삭제 함수
 async function deletePost(id) {
     if (confirm("정말 삭제하시겠습니까?")) {
-        await fetch(`https://my-mongo-project.onrender.com/posts/${id}`, {
+        await fetch(`${SERVER_URL}/posts/${id}`, {
             method: 'DELETE'
         });
-        showBoardListPage();
+        showBoardListPage(); // 게시글 삭제 후 목록 갱신
     }
 }
 
 // 게시글 상세보기 함수
 async function viewPost(id) {
-    const response = await fetch(`https://my-mongo-project.onrender.com/posts/${id}`);
+    const response = await fetch(`${SERVER_URL}/posts/${id}`);
     const post = await response.json();
 
     post.views += 1; // 조회수 증가
-    await fetch(`https://my-mongo-project.onrender.com/posts/${id}`, {
+    await fetch(`${SERVER_URL}/posts/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(post)
@@ -113,7 +116,7 @@ async function viewPost(id) {
     document.getElementById('postViews').innerText = `조회수: ${post.views}`;
 
     const attachmentList = document.getElementById('attachmentList');
-    attachmentList.innerHTML = '';  // 이전에 있던 첨부파일 목록 초기화
+    attachmentList.innerHTML = ''; // 이전 첨부파일 목록 초기화
 
     if (post.file) {
         const listItem = document.createElement('li');
@@ -132,30 +135,34 @@ async function viewPost(id) {
 // 게시글 수정 페이지로 이동 함수
 function modifyPost() {
     if (currentPostId) {
-        const post = posts.find(post => post._id === currentPostId);
-        document.getElementById('authorName').value = post.author;
-        document.getElementById('title').value = post.title;
-        document.getElementById('content').value = post.content;
-        document.getElementById('fileNameDisplay').innerText = post.file ? `파일명: ${post.file}` : '';
+        // 수정할 게시글 정보를 가져오기
+        fetch(`${SERVER_URL}/posts/${currentPostId}`)
+            .then(response => response.json())
+            .then(post => {
+                document.getElementById('authorName').value = post.author;
+                document.getElementById('title').value = post.title;
+                document.getElementById('content').value = post.content;
+                document.getElementById('fileNameDisplay').innerText = post.file ? `파일명: ${post.file}` : '';
 
-        document.getElementById('writePage').style.display = 'block';
-        document.getElementById('postDetailPage').style.display = 'none';
-        document.getElementById('boardListPage').style.display = 'none';
+                document.getElementById('writePage').style.display = 'block';
+                document.getElementById('postDetailPage').style.display = 'none';
+                document.getElementById('boardListPage').style.display = 'none';
+            });
     }
 }
 
 // 검색 기능
 async function search() {
     const searchInput = document.getElementById('searchInput').value;
-    const response = await fetch(`https://my-mongo-project.onrender.com/posts/search?query=${searchInput}`);
+    const response = await fetch(`${SERVER_URL}/posts/search?query=${searchInput}`);
     const filteredPosts = await response.json();
-    displayFilteredBoardList(filteredPosts);
+    displayFilteredBoardList(filteredPosts); // 검색된 게시글 표시
 }
 
 // 검색된 게시글 목록 표시 함수
 function displayFilteredBoardList(filteredPosts) {
     const boardList = document.getElementById('boardList');
-    boardList.innerHTML = '';
+    boardList.innerHTML = ''; // 기존 목록 초기화
 
     filteredPosts.forEach((post, index) => {
         const row = document.createElement('tr');
@@ -170,26 +177,26 @@ function displayFilteredBoardList(filteredPosts) {
             <td><button onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
-        boardList.appendChild(row);
+        boardList.appendChild(row); // 필터링된 게시글 목록에 추가
     });
 }
 
 // 페이지 초기화
 document.addEventListener("DOMContentLoaded", () => {
-    displayBoardList();
+    displayBoardList(); // 페이지 로드 시 게시글 목록 표시
 });
 
 // 페이지 넘김 기능
 function prevPage() {
     if (currentPage > 1) {
         currentPage--;
-        displayBoardList();
+        displayBoardList(); // 이전 페이지 표시
     }
 }
 
 function nextPage() {
     currentPage++;
-    displayBoardList();
+    displayBoardList(); // 다음 페이지 표시
 }
 
 // 파일명을 표시하는 함수
@@ -214,8 +221,11 @@ document.getElementById('fileUploadContainer').addEventListener('click', functio
 function goToList() {
     document.getElementById('postDetailPage').style.display = 'none';
     document.getElementById('boardListPage').style.display = 'block';
-    displayBoardList();
+    displayBoardList(); // 게시글 목록 표시
 }
+
+
+
 
 
 

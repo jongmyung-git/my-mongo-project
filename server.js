@@ -4,8 +4,10 @@ const multer = require('multer');
 const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
-const Post = require('./models/Post');  // Post 모델을 사용합니다.
+const Post = require('./models/Post');
 require('dotenv').config();  // .env 파일을 로드하여 환경 변수 사용
+const fs = require('fs');  // 파일 시스템 모듈
+const cors = require('cors');  // CORS 미들웨어 추가
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -14,16 +16,32 @@ const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 const io = socketIo(server);  // socket.io 연결
 
-// MongoDB 연결
+// MongoDB 연결 (기본 설정을 사용)
 const mongoURI = process.env.MONGODB_URI;  // .env에서 MongoDB URI 가져오기
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
+
+// CORS 설정 (클라이언트 URL을 환경 변수로 설정)
+const clientUrl = process.env.CLIENT_URL;  // .env에서 클라이언트 URL 가져오기
+app.use(cors({
+  origin: clientUrl,  // 클라이언트의 URL만 허용
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true  // 쿠키 등 인증 정보를 허용하려면 true로 설정
+}));
 
 // 미들웨어 설정
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// public 폴더를 정적 파일 경로로 설정
+app.use(express.static(path.join(__dirname, 'public')));  // public 폴더에서 정적 파일을 서빙
+
+// **uploads 폴더가 없는 경우 생성**
+if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
+  fs.mkdirSync(path.join(__dirname, 'uploads'), { recursive: true });
+}
 
 // Multer 설정 (파일 업로드)
 const storage = multer.diskStorage({
@@ -77,13 +95,19 @@ app.put('/posts/:id', upload.single('file'), async (req, res) => {
     const { id } = req.params;
     const { author, title, content } = req.body;
 
-    const updatedPost = await Post.findByIdAndUpdate(id, {
+    const updateData = {
       author,
       title,
       content,
-      file: req.file ? req.file.filename : undefined,
-      date: new Date()
-    }, { new: true });
+      date: new Date(),
+    };
+
+    // 파일이 업로드된 경우에만 파일 정보를 업데이트
+    if (req.file) {
+      updateData.file = req.file.filename;
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(id, updateData, { new: true });
 
     res.json(updatedPost);
   } catch (err) {
@@ -140,17 +164,6 @@ app.get('/posts/search', async (req, res) => {
 
 // 서버 실행 (http 서버와 socket.io 연결)
 server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on ${process.env.PORT || 'http://localhost:5000'}`);
 });
-
-
-
-
-
-
-
-
-
-
-
 
