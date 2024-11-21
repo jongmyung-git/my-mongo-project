@@ -19,8 +19,8 @@ const io = socketIo(server);  // socket.io 연결
 // MongoDB 연결 (기본 설정을 사용)
 const mongoURI = process.env.MONGODB_URI;  // .env에서 MongoDB URI 가져오기
 mongoose.connect(mongoURI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB 연결 성공'))
+  .catch(err => console.log('MongoDB 연결 실패:', err));
 
 // CORS 설정 (클라이언트 URL을 환경 변수로 설정)
 const clientUrl = process.env.CLIENT_URL;  // .env에서 클라이언트 URL 가져오기
