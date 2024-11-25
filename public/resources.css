@@ -1,0 +1,188 @@
+/* 기본 스타일 */
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* 전체 페이지 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}
+
+/* 헤더 스타일 */
+header {
+    background-color: green;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: auto;
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 푸터 스타일 */
+footer {
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* 레이아웃 */
+.wrapper {
+    display: flex;
+    width: 1200px;
+    height: 700px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 50px auto;
+    margin-top: 130px;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+    width: 150px;
+    background-color: #2a587c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.tab-button {
+    width: 100%;
+    padding: 15px;
+    background: none;
+    color: white;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tab-button.active,
+.tab-button:hover {
+    background-color: #1e4565;
+}
+
+/* 콘텐츠 스타일 */
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto; /* 콘텐츠 스크롤 활성화 */
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.search-bar select,
+.search-bar input,
+.search-bar button {
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* 테이블 스타일 */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.data-table th {
+    background-color: #f4f4f4;
+}
+
+/* 영상 자료실 스타일 */
+.video-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* 영상들 사이의 간격 설정 */
+    justify-content: center;
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+}
+
+.video-item {
+    width: 200px;
+    text-align: center;
+}
+
+.video-item img {
+    width: 100%;
+    height: auto;
+    min-height: 150px;
+    border-radius: 8px;
+}
+
+.video-item p {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: bold;
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Echo 자료실</title>
+    <link rel="stylesheet" href="resources2.css">
+</head>
+<body>
+    <!-- 헤더 영역 (고정 네비게이션 바) -->
+    <header>
+        <div class="header-content">
+            <img src="green-earth.png" alt="Eco Echo Logo" class="logo-img">
+            <div class="logo-text"><a href="exam1.html">Eco Echo</a></div>
+            <nav>
+                <ul>
+                    <li><a href="about.html" target="_self">캠페인 소개</a></li>
+                    <li><a href="quiz.html" target="_self">OX 퀴즈</a></li>
+                    <li><a href="resources.html" target="_self">자료실</a></li>
+                    <li><a href="board.html" target="_self">자유게시판</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 (중앙 정렬된 콘텐츠) -->
+    <main>
+        <div class="wrapper">
+            <!-- 사이드바 -->
+            <div class="sidebar">
+                <button class="tab-button active" onclick="showTab('자료실')">자료실</button>
+                <button class="tab-button" onclick="showTab('영상자료실')">영상 자료실</button>
+            </div>
+    
+            <!-- 콘텐츠 영역 -->
+            <div class="content">
+                <!-- 자료실 콘텐츠 -->
+                <div id="자료실" class="tab-content">
+                    <h1>자료실</h1>
+                    <div class="search-bar">
+                        <select>
+                            <option>전체</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+                        <button onclick="search()">검색</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th>제목</th>
+                                <th>작성자</th>
+                                <th>등록일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <a href="2023 EU탄소국경조정제 QnA.pdf" download>
+                                        2023 EU탄소국경조정제 QnA
+                                    </a>
+                                </td>
+                                <td>최고관리자</td>
+                                <td>2024/11/21</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>사업장 부문 온실가스 목표관리제도 개편안 설명자료</td>
+                                <td>최고관리자</td>
+                                <td>2024/11/15</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>[2024년 기후변화특성화대학원] 모집 공고</td>
+                                <td>최고관리자</td>
+                                <td>2024/11/15</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>탄소중립포털 설문조사 참여 EVENT 당첨자발표</td>
+                                <td>최고관리자</td>
+                                <td>2024/11/15</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <!-- 영상 자료실 콘텐츠 -->
+                <div id="영상자료실" class="tab-content" style="display: none;">
+                    <h1>영상 자료실</h1>
+                    <div class="search-bar">
+                        <select>
+                            <option>전체</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+                        <button onclick="search()">검색</button>
+                    </div>
+                    <div class="video-gallery">
+                        <div class="video-item">
+                            <a href="https://www.youtube.com/watch?v=cLYg_M5jo00" target="_blank">
+                                <img src="E.png" alt="탄소중립! 내가 먼저 실천해요~!">
+                            </a>
+                            <p>탄소중립! 내가 먼저 실천해요~!</p>
+                        </div>
+                        <div class="video-item">
+                            <a href="https://example.com/video2" target="_blank">
+                                <img src="C.png" alt="탄소중립 실천 행동">
+                            </a>
+                            <p>탄소중립 실천 행동</p>
+                        </div>
+                        <div class="video-item">
+                            <a href="https://example.com/video3" target="_blank">
+                                <img src="A.png" alt="내 최애를 지키는 방법">
+                            </a>
+                            <p>내 최애를 지키는 방법</p>
+                        </div>
+                        <div class="video-item">
+                            <a href="https://example.com/video4" target="_blank">
+                                <img src="D.png" alt="우리가 좋아하는 것들이 사라진다면?">
+                            </a>
+                            <p>우리가 좋아하는 것들이 사라진다면?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 푸터 영역 -->
+    <footer>
+        <p>&copy; 2024 Eco Echo | All rights reserved.</p>
+    </footer>
+
+    <script src="resources.js"></script>
+</body>
+</html>
