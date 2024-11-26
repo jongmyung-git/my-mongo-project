@@ -30,27 +30,15 @@ async function displayBoardList() {
     });
 }
 
-// 글쓰기 페이지 표시 함수
+// 글쓰기 페이지로 이동
 function showWritePage() {
     currentPostId = null; // 새로운 글을 작성할 때는 currentPostId 초기화
-    document.getElementById('boardListPage').style.display = 'none';
-    document.getElementById('postDetailPage').style.display = 'none';
-    document.getElementById('writePage').style.display = 'block';
-
-    // 기존 내용 초기화
-    document.getElementById('authorName').value = '';
-    document.getElementById('title').value = '';
-    document.getElementById('content').value = '';
-    document.getElementById('fileUpload').value = '';
-    document.getElementById('fileNameDisplay').innerText = '';
+    window.location.href = 'board2.html'; // 글쓰기 페이지로 이동
 }
 
-// 게시판 목록 페이지로 돌아가는 함수
+// 게시글 목록 페이지로 돌아가는 함수
 function showBoardListPage() {
-    document.getElementById('writePage').style.display = 'none';
-    document.getElementById('postDetailPage').style.display = 'none';
-    document.getElementById('boardListPage').style.display = 'block';
-    displayBoardList(); // 게시글 목록 새로고침
+    window.location.href = 'board1.html'; // 게시글 목록 페이지로 이동
 }
 
 // 게시글 저장 함수
@@ -128,27 +116,7 @@ async function viewPost(id) {
         attachmentList.appendChild(listItem);
     }
 
-    document.getElementById('boardListPage').style.display = 'none';
-    document.getElementById('postDetailPage').style.display = 'block';
-}
-
-// 게시글 수정 페이지로 이동 함수
-function modifyPost() {
-    if (currentPostId) {
-        // 수정할 게시글 정보를 가져오기
-        fetch(`${SERVER_URL}/posts/${currentPostId}`)
-            .then(response => response.json())
-            .then(post => {
-                document.getElementById('authorName').value = post.author;
-                document.getElementById('title').value = post.title;
-                document.getElementById('content').value = post.content;
-                document.getElementById('fileNameDisplay').innerText = post.file ? `파일명: ${post.file}` : '';
-
-                document.getElementById('writePage').style.display = 'block';
-                document.getElementById('postDetailPage').style.display = 'none';
-                document.getElementById('boardListPage').style.display = 'none';
-            });
-    }
+    window.location.href = 'board3.html'; // 글 상세 페이지로 이동
 }
 
 // 검색 기능
@@ -216,13 +184,6 @@ function displayFileName() {
 document.getElementById('fileUploadContainer').addEventListener('click', function() { 
     document.getElementById('fileUpload').click();
 });
-
-// 목록 버튼 클릭 시 게시판 목록으로 이동
-function goToList() {
-    document.getElementById('postDetailPage').style.display = 'none';
-    document.getElementById('boardListPage').style.display = 'block';
-    displayBoardList(); // 게시글 목록 표시
-}
 
 
 

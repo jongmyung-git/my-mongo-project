@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판</title>
+    <link rel="stylesheet" href="style.css"> <!-- 스타일 파일 경로 수정 -->
+</head>
+<body>
+    <!-- 글 상세보기 페이지 -->
+    <div class="post-detail-page" id="postDetailPage" style="display: none;">
+        <h1>자유게시판</h1>
+        <table>
+            <tr>
+                <td colspan="2" id="postTitle" style="font-weight: bold; font-size: 24px;">제목</td>
+            </tr>
+            <tr>
+                <td style="width: 150px;">작성자: </td>
+                <td id="postAuthor">작성자명</td>
+            </tr>
+            <tr>
+                <td>등록일: </td>
+                <td id="postDate">날짜</td>
+            </tr>
+            <tr>
+                <td>조회수: </td>
+                <td id="postViews">조회수</td>
+            </tr>
+            <tr>
+                <td colspan="2" id="postContent" style="text-align:left;">내용</td>
+            </tr>
+            <tr>
+                <td colspan="2" id="attachments">
+                    <h3>첨부파일</h3>
+                    <ul id="attachmentList"></ul>
+                </td>
+            </tr>
+        </table>
+        <div class="buttons">
+            <button class="list-button" onclick="goToList()" style="float:left;">목록</button>
+            <div style="float:right;">
+                <button class="modify-button" onclick="modifyPost()">수정</button>
+                <button class="delete-button2" onclick="deleteCurrentPost()">삭제</button>
+                <button class="write-button" onclick="showWritePage()">글쓰기</button>
+            </div>
+        </div>
+    </div>
+        
+    <script src="frontend.js"></script> <!-- JS 파일 경로 수정 -->
+</body>
+</html>

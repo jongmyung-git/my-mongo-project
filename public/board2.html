@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판</title>
+    <link rel="stylesheet" href="style.css"> <!-- 스타일 파일 경로 수정 -->
+</head>
+<body>
+    <!-- 글쓰기 페이지 -->
+    <div class="write-page" id="writePage" style="display: none;">
+        <h1>자유게시판 글쓰기</h1>
+        <input type="text" placeholder="작성자 이름을 입력하세요" id="authorName">
+        <input type="text" placeholder="제목을 입력하세요" id="title">
+        <textarea placeholder="내용을 입력하세요" id="content"></textarea>
+        <div class="file-upload" id="fileUploadContainer">
+            <input type="file" id="fileUpload" style="display: none;" onchange="displayFileName()">
+            <p>첨부파일을 여기에 드래그하여 놓으세요</p>
+            <p id="fileNameDisplay"></p> <!-- 파일명을 표시할 요소 -->
+        </div>
+        <div class="button-container">
+            <button class="save-button" onclick="savePost()">저장</button>
+            <button class="cancel-button" onclick="showBoardListPage()">취소</button>
+        </div>
+    </div>
+        
+    <script src="frontend.js"></script> <!-- JS 파일 경로 수정 -->
+</body>
+</html>
+
