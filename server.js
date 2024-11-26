@@ -17,13 +17,6 @@ const staticPath = path.join(__dirname, 'public', 'images');
 console.log(`Serving static files from: ${staticPath}`); // 디버깅용 로그
 app.use('/images', express.static(staticPath));
 
-// Render 환경의 포트를 사용 (기본값: 3000)
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
 // 서버 설정 (http와 socket.io 통합)
 const server = http.createServer(app);
 const io = socketIo(server);  // socket.io 연결
