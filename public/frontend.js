@@ -213,8 +213,7 @@ document.getElementById('fileUploadContainer').addEventListener('click', functio
 
 // 목록 버튼 클릭 시 게시판 목록으로 이동
 function goToList() {
-    document.getElementById('postDetailPage').style.display = 'none';
-    document.getElementById('boardListPage').style.display = 'block';
+    window.location.href = "board.html"; //게세판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
 
