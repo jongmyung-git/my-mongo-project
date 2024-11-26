@@ -12,6 +12,13 @@ const cors = require('cors');  // CORS 미들웨어 추가
 const app = express();
 const port = process.env.PORT || 5000;
 
+// public/images 디렉토리를 정적으로 제공
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+
+app.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});
+
 // 서버 설정 (http와 socket.io 통합)
 const server = http.createServer(app);
 const io = socketIo(server);  // socket.io 연결
