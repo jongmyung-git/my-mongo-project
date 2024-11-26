@@ -12,11 +12,16 @@ const cors = require('cors');  // CORS 미들웨어 추가
 const app = express();
 const port = process.env.PORT || 5000;
 
-// public/images 디렉토리를 정적으로 제공
-app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
+// 정적 파일 제공
+const staticPath = path.join(__dirname, 'public', 'images');
+console.log(`Serving static files from: ${staticPath}`); // 디버깅용 로그
+app.use('/images', express.static(staticPath));
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+// Render 환경의 포트를 사용 (기본값: 3000)
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 // 서버 설정 (http와 socket.io 통합)
