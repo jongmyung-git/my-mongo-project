@@ -33,12 +33,12 @@ async function displayBoardList() {
 // 글쓰기 페이지로 이동
 function showWritePage() {
     currentPostId = null; // 새로운 글을 작성할 때는 currentPostId 초기화
-    window.location.href = 'board2.html'; // 글쓰기 페이지로 이동
+    window.location.href = '/public/board2.html'; // 글쓰기 페이지로 이동
 }
 
 // 게시글 목록 페이지로 돌아가는 함수
 function showBoardListPage() {
-    window.location.href = 'board1.html'; // 게시글 목록 페이지로 이동
+    window.location.href = '/public/board.html'; // 게시글 목록 페이지로 이동
 }
 
 // 게시글 저장 함수
@@ -116,7 +116,7 @@ async function viewPost(id) {
         attachmentList.appendChild(listItem);
     }
 
-    window.location.href = 'board3.html'; // 글 상세 페이지로 이동
+    window.location.href = '/public/board3.html'; // 글 상세 페이지로 이동
 }
 
 // 검색 기능
