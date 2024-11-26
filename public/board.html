@@ -1,46 +1,76 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>자유게시판</title>
-    <link rel="stylesheet" href="style.css"> <!-- 스타일 파일 경로 수정 -->
+    <title>Eco Echo 자료실</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <!-- 게시판 목록 페이지 -->
-    <div class="board-list" id="boardListPage">
-        <h1>자유게시판</h1>
-        <div class="search-box">
-            <select id="filter">
-                <option value="all">전체</option>
-            </select>
-            <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
-            <button onclick="search()">검색</button>
-            <button onclick="showWritePage()">글쓰기</button>
+    <!-- 헤더 영역 (고정 네비게이션 바) -->
+    <header>
+        <div class="header-content">
+            <img src="green-earth.png" alt="Eco Echo Logo" class="logo-img">
+            <div class="logo-text"><a href="exam1.html">Eco Echo</a></div>
+            <nav>
+                <ul>
+                    <li><a href="about.html" target="_self">캠페인 소개</a></li>
+                    <li><a href="quiz.html" target="_self">OX 퀴즈</a></li>
+                    <li><a href="resources.html" target="_self">자료실</a></li>
+                    <li><a href="board.html" target="_self">자유게시판</a></li>
+                </ul>
+            </nav>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>등록일</th>
-                    <th>첨부파일</th>
-                    <th>조회수</th>
-                    <th>삭제</th>
-                </tr>
-            </thead>
-            <tbody id="boardList">
-                <!-- 게시글 목록 표시 부분 -->
-            </tbody>
-        </table>
-        <div class="pagination">
-            <button onclick="prevPage()">«</button>
-            <span id="currentPage">1</span>
-            <button onclick="nextPage()">»</button>
+    </header>
+
+    <!-- 메인 콘텐츠 (중앙 정렬된 콘텐츠) -->
+    <main>
+        <!-- 게시판 목록 페이지 -->
+        <div class="board-list" id="boardListPage">
+            <h1>자유게시판</h1>
+            <div class="search-box">
+                <select id="filter">
+                    <option value="all">전체</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+                <button onclick="search()">검색</button>
+                <button onclick="showWritePage()">글쓰기</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>등록일</th>
+                        <th>첨부파일</th>
+                        <th>조회수</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="boardList">
+                    <!-- 게시글 목록 표시 부분 -->
+                </tbody>
+            </table>
+            <div class="pagination">
+                <button onclick="prevPage()">«</button>
+                <span id="currentPage">1</span>
+                <button onclick="nextPage()">»</button>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <!-- 푸터 영역 -->
+    <footer>
+        <p>&copy; 2024 Eco Echo | All rights reserved.</p>
+    </footer>
 
     <script src="frontend.js"></script> <!-- JS 파일 경로 수정 -->
 </body>
+
 </html>
