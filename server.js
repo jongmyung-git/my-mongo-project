@@ -14,8 +14,8 @@ const port = process.env.PORT || 5000;
 
 // 정적 파일 제공
 const staticPath = path.join(__dirname, 'public', 'images');
-console.log(`Serving static files from: ${staticPath}`); // 디버깅용 로그
-app.use('/images', express.static(staticPath));
+console.log(`Serving static files from: ${staticPath}`);  // 디버깅용 로그
+app.use('/images', express.static(staticPath));  // /images 경로로 정적 파일 제공
 
 // 서버 설정 (http와 socket.io 통합)
 const server = http.createServer(app);
