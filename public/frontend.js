@@ -219,41 +219,6 @@ function goToList() {
     displayBoardList(); // 게시글 목록 표시
 }
 
-// 게시글 상세 페이지 로딩 (DOMContentLoaded)
-document.addEventListener("DOMContentLoaded", async () => {
-    // URL 파라미터에서 'id' 값 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const postId = urlParams.get('id');
-
-    if (postId) {
-        // 해당 ID로 게시글 정보 요청
-        const response = await fetch(`${SERVER_URL}/posts/${postId}`);
-        const post = await response.json();
-
-        // 게시글 내용 표시
-        document.getElementById('postTitle').innerText = post.title;
-        document.getElementById('postAuthor').innerText = `작성자: ${post.author}`;
-        document.getElementById('postDate').innerText = `등록일: ${new Date(post.date).toLocaleDateString()}`;
-        document.getElementById('postContent').innerText = post.content;
-        document.getElementById('postViews').innerText = `조회수: ${post.views}`;
-
-        const attachmentList = document.getElementById('attachmentList');
-        attachmentList.innerHTML = ''; // 이전 첨부파일 목록 초기화
-
-        if (post.file) {
-            const listItem = document.createElement('li');
-            const downloadLink = document.createElement('a');
-            downloadLink.href = `/uploads/${post.file}`;
-            downloadLink.download = post.file;
-            downloadLink.innerText = `파일 다운로드: ${post.file}`;
-            listItem.appendChild(downloadLink);
-            attachmentList.appendChild(listItem);
-        }
-    } else {
-        // 'id'가 없다면 오류 처리
-        alert("잘못된 접근입니다.");
-    }
-});
 
 
 
