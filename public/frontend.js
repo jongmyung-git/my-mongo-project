@@ -106,6 +106,7 @@ async function viewPost(id) {
 
     currentPostId = post._id;
 
+    // 게시글 내용 업데이트
     document.getElementById('postTitle').innerText = post.title;
     document.getElementById('postAuthor').innerText = `작성자: ${post.author}`;
     document.getElementById('postDate').innerText = `등록일: ${new Date(post.date).toLocaleDateString()}`;
@@ -125,7 +126,8 @@ async function viewPost(id) {
         attachmentList.appendChild(listItem);
     }
 
-    window.location.href = "board3.html"; //게시글 상세 페이지로 이동
+    // 상세페이지로 이동 (게시글 ID를 URL 파라미터로 전달)
+    window.location.href = `board-detail.html?id=${post._id}`;
 }
 
 // 게시글 수정 페이지로 이동 함수
