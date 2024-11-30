@@ -124,11 +124,11 @@ async function displayPostDetails() {
     const viewsElement = document.getElementById('postViews');
 
     titleElement.innerText = post.title;
-    authorElement.innerText = `Author: ${post.author}`;
+    authorElement.innerText = `${post.author}`;  // 수정: "Author: oo" 대신 "작성자: oo"
     contentElement.innerHTML = post.content;  // HTML 형식으로 내용 표시
-    fileElement.innerText = post.file ? `첨부파일: ${post.file}` : '첨부파일 없음';
-    dateElement.innerText = `Date: ${new Date(post.date).toLocaleDateString()}`;
-    viewsElement.innerText = `Views: ${post.views}`;
+    fileElement.innerText = post.file ? `${post.file}` : '첨부파일 없음';
+    dateElement.innerText = `${new Date(post.date).toLocaleDateString()}`;  // 수정: 날짜 표시 형식 수정
+    viewsElement.innerText = `${post.views}`;  // 수정: 조회수 표시 형식 수정
 }
 
 // 검색 기능
