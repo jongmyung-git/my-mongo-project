@@ -63,42 +63,52 @@ const questions = [
     }
 
 
-function checkAnswer(userAnswer) {
-    const correctAnswer = questions[currentQuestion].answer;
-    const resultMessage = document.getElementById("result-message");
-    const explanationElement = document.getElementById("explanation");
-    const trueButton = document.getElementById("true-button");
-    const falseButton = document.getElementById("false-button");
-
-    // 정답 확인 및 점수 계산
-    if (userAnswer === correctAnswer) {
-        resultMessage.innerText = "정답입니다!";
-        resultMessage.style.color = "green";
-        score++;
-        userAnswer ? trueButton.classList.add("correct") : falseButton.classList.add("correct");
-    } else {
-        resultMessage.innerText = "틀렸습니다!";
-        resultMessage.style.color = "red";
-        userAnswer ? trueButton.classList.add("incorrect") : falseButton.classList.add("incorrect");
-    }
-
-    // 해설 표시
-    explanationElement.innerText = questions[currentQuestion].explanation;
-    explanationElement.style.display = "block"; // 해설을 보이도록 설정
-
-    // 다음 문제로 넘어가기
-    setTimeout(() => {
-        explanationElement.style.display = "none"; // 해설 숨기기
-        trueButton.classList.remove("correct", "incorrect");
-        falseButton.classList.remove("correct", "incorrect");
-        currentQuestion++;
-        if (currentQuestion < questions.length) {
-            loadQuestion();
+    function checkAnswer(userAnswer) {
+        const correctAnswer = questions[currentQuestion].answer;
+        const resultMessage = document.getElementById("result-message");
+        const explanationElement = document.getElementById("explanation");
+        const trueButton = document.getElementById("true-button");
+        const falseButton = document.getElementById("false-button");
+    
+        // 버튼 클릭 후 비활성화
+        trueButton.disabled = true;
+        falseButton.disabled = true;
+    
+        // 정답 확인 및 점수 계산
+        if (userAnswer === correctAnswer) {
+            resultMessage.innerText = "정답입니다!";
+            resultMessage.style.color = "green";
+            score++;
+            userAnswer ? trueButton.classList.add("correct") : falseButton.classList.add("correct");
         } else {
-            showFinalScore();
+            resultMessage.innerText = "틀렸습니다!";
+            resultMessage.style.color = "red";
+            userAnswer ? trueButton.classList.add("incorrect") : falseButton.classList.add("incorrect");
         }
-    }, 4000); // 해설을 3초 동안 표시한 후 다음 문제로 이동
-}
+    
+        // 해설 표시
+        explanationElement.innerText = questions[currentQuestion].explanation;
+        explanationElement.style.display = "block"; // 해설을 보이도록 설정
+    
+        // 다음 문제로 넘어가기
+        setTimeout(() => {
+            explanationElement.style.display = "none"; // 해설 숨기기
+            trueButton.classList.remove("correct", "incorrect");
+            falseButton.classList.remove("correct", "incorrect");
+    
+            // 버튼 다시 활성화
+            trueButton.disabled = false;
+            falseButton.disabled = false;
+    
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }, 3000); // 해설을 3초 동안 표시한 후 다음 문제로 이동
+    }
+    
 
 
 

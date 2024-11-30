@@ -3,7 +3,7 @@ let currentPage = 1;
 let currentPostId; // 현재 보고 있는 글의 ID 저장 변수
 
 // 서버 URL (로컬 서버 주소)
-const SERVER_URL = 'https://my-mongo-project.onrender.com';  // 로컬 서버 주소로 수정
+const SERVER_URL = 'https://my-mongo-project.onrender.com';  // 서버 주소
 
 // 게시글 목록 표시 함수
 async function displayBoardList() {
@@ -18,7 +18,7 @@ async function displayBoardList() {
         
         row.innerHTML = `
             <td class="col-1">${(currentPage - 1) * 10 + (index + 1)}</td>
-            <td class="col-2"><a href="#" onclick="viewPost('${post._id}')">${post.title}</a></td>
+            <td class="col-2"><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
             <td class="col-3">${post.author}</td>
             <td class="col-4">${new Date(post.date).toLocaleDateString()}</td>
             <td class="col-5">${post.file ? 'O' : '-'}</td>
@@ -97,53 +97,31 @@ async function viewPost(id) {
     const response = await fetch(`${SERVER_URL}/posts/${id}`);
     const post = await response.json();
 
-    post.views += 1; // 조회수 증가
-    await fetch(`${SERVER_URL}/posts/${id}/views`, {  // Use the correct endpoint to increment views
+    // 조회수 증가 요청 비동기로 처리
+    fetch(`${SERVER_URL}/posts/${id}/views`, {  
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(post)
-    });
+    }).catch((err) => console.error('조회수 업데이트 실패:', err));
 
     currentPostId = post._id;
 
-    // 게시글 내용 업데이트
-    document.getElementById('postTitle').innerText = post.title;
-    document.getElementById('postAuthor').innerText = `작성자: ${post.author}`;
-    document.getElementById('postDate').innerText = `등록일: ${new Date(post.date).toLocaleDateString()}`;
-    document.getElementById('postContent').innerText = post.content;
-    document.getElementById('postViews').innerText = `조회수: ${post.views}`;
-
-    const attachmentList = document.getElementById('attachmentList');
-    attachmentList.innerHTML = ''; // 이전 첨부파일 목록 초기화
-
-    if (post.file) {
-        const listItem = document.createElement('li');
-        const downloadLink = document.createElement('a');
-        downloadLink.href = `/uploads/${post.file}`; // 서버에 업로드된 파일 경로
-        downloadLink.download = post.file;
-        downloadLink.innerText = `파일 다운로드: ${post.file}`;
-        listItem.appendChild(downloadLink);
-        attachmentList.appendChild(listItem);
-    }
-
-    // 상세페이지로 이동 (게시글 ID를 URL 파라미터로 전달)
+    // 상세 페이지로 이동
     window.location.href = `board3.html?id=${post._id}`;
 }
 
 // 게시글 수정 페이지로 이동 함수
-function modifyPost() {
+async function modifyPost() {
     if (currentPostId) {
-        // 수정할 게시글 정보를 가져오기
-        fetch(`${SERVER_URL}/posts/${currentPostId}`)
-            .then(response => response.json())
-            .then(post => {
-                document.getElementById('authorName').value = post.author;
-                document.getElementById('title').value = post.title;
-                document.getElementById('content').value = post.content;
-                document.getElementById('fileNameDisplay').innerText = post.file ? `파일명: ${post.file}` : '';
+        const response = await fetch(`${SERVER_URL}/posts/${currentPostId}`);
+        const post = await response.json();
 
-                window.location.href = "board2.html";
-            });
+        document.getElementById('authorName').value = post.author;
+        document.getElementById('title').value = post.title;
+        document.getElementById('content').value = post.content;
+        document.getElementById('fileNameDisplay').innerText = post.file ? `파일명: ${post.file}` : '';
+
+        window.location.href = "board2.html"; // 수정 페이지로 이동
     }
 }
 
@@ -165,7 +143,7 @@ function displayFilteredBoardList(filteredPosts) {
         
         row.innerHTML = `
             <td>${index + 1}</td>
-            <td><a href="#" onclick="viewPost('${post._id}')">${post.title}</a></td>
+            <td><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
             <td>${post.author}</td>
             <td>${new Date(post.date).toLocaleDateString()}</td>
             <td>${post.file ? '첨부파일' : '-'}</td>
@@ -215,9 +193,10 @@ document.getElementById('fileUploadContainer').addEventListener('click', functio
 
 // 목록 버튼 클릭 시 게시판 목록으로 이동
 function goToList() {
-    window.location.href = "board.html"; //게세판 목록 페이지로 이동
+    window.location.href = "board.html"; //게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 
