@@ -113,6 +113,7 @@ async function viewPost(id) {
 // 게시글 상세페이지에서 데이터를 표시하기 위한 함수
 async function displayPostDetails() {
     const postId = new URLSearchParams(window.location.search).get('id');
+    console.log('게시글 ID:', postId);  // 콘솔에 ID 확인
     const response = await fetch(`${SERVER_URL}/posts/${postId}`);
     const post = await response.json();
 
@@ -125,7 +126,7 @@ async function displayPostDetails() {
 
     titleElement.innerText = post.title;
     authorElement.innerText = `작성자: ${post.author}`;  // 수정: "Author: oo" 대신 "작성자: oo"
-    contentElement.innerHTML = post.content;  // HTML 형식으로 내용 표시
+    contentElement.innerHTML = post.content.replace(/\n/g, '<br>');  // 줄바꿈 처리
     fileElement.innerText = post.file ? `${post.file}` : '첨부파일 없음';
     dateElement.innerText = `등록일: ${new Date(post.date).toLocaleDateString()}`;  // 수정: 날짜 표시 형식 수정
     viewsElement.innerText = `조회수: ${post.views}`;  // 수정: 조회수 표시 형식 수정
@@ -207,6 +208,7 @@ function goToList() {
     window.location.href = "board.html"; //게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 
