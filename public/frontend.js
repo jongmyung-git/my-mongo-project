@@ -97,8 +97,8 @@ async function viewPost(id) {
     const response = await fetch(`${SERVER_URL}/posts/${id}`);
     const post = await response.json();
 
-    // 조회수 증가 요청 비동기로 처리
-    fetch(`${SERVER_URL}/posts/${id}/views`, {  
+    // 조회수 증가 요청
+    await fetch(`${SERVER_URL}/posts/${id}/views`, {  
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(post)
@@ -117,6 +117,9 @@ async function displayPostDetails() {
     const response = await fetch(`${SERVER_URL}/posts/${postId}`);
     const post = await response.json();
 
+    // 데이터가 제대로 응답되는지 확인
+    console.log(post);
+
     const titleElement = document.getElementById('postTitle');
     const authorElement = document.getElementById('postAuthor');
     const contentElement = document.getElementById('postContent');
@@ -124,16 +127,18 @@ async function displayPostDetails() {
     const dateElement = document.getElementById('postDate');
     const viewsElement = document.getElementById('postViews');
 
+    // 게시글 데이터 표시
     titleElement.innerText = post.title;
-    authorElement.innerText = `작성자: ${post.author}`;  // 수정: "Author: oo" 대신 "작성자: oo"
+    authorElement.innerText = `작성자: ${post.author}`;
     contentElement.innerHTML = post.content.replace(/\n/g, '<br>');  // 줄바꿈 처리
     fileElement.innerText = post.file ? `${post.file}` : '첨부파일 없음';
 
-    // 날짜를 'YYYY-MM-DD' 형식으로 표시
+    // 날짜 포맷팅 (YYYY-MM-DD)
     const postDate = new Date(post.date);
     const formattedDate = postDate.getFullYear() + '-' + (postDate.getMonth() + 1).toString().padStart(2, '0') + '-' + postDate.getDate().toString().padStart(2, '0');
     dateElement.innerText = formattedDate;  // 등록일: YYYY-MM-DD
 
+    // 조회수 표시
     viewsElement.innerText = post.views;  // 조회수: 숫자만 표시
 }
 
@@ -213,6 +218,7 @@ function goToList() {
     window.location.href = "board.html"; // 게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 
