@@ -23,7 +23,6 @@ async function displayBoardList() {
             <td class="col-4">${new Date(post.date).toLocaleDateString()}</td>
             <td class="col-5">${post.file ? 'O' : '-'}</td>
             <td class="col-6">${post.views}</td>
-            <td class="col-7"><button class="delete-button" onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
         boardList.appendChild(row); // 게시글 목록에 추가
@@ -165,7 +164,6 @@ function displayFilteredBoardList(filteredPosts) {
             <td>${new Date(post.date).toLocaleDateString()}</td>
             <td>${post.file ? '첨부파일' : '-'}</td>
             <td>${post.views}</td>
-            <td><button onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
         boardList.appendChild(row); // 필터링된 게시글 목록에 추가
