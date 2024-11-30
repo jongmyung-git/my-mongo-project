@@ -129,7 +129,7 @@ async function displayPostDetails() {
 
     // 게시글 데이터 표시
     titleElement.innerText = post.title;
-    authorElement.innerText = `작성자: ${post.author}`;
+    authorElement.innerText = `${post.author}`;
     contentElement.innerHTML = post.content.replace(/\n/g, '<br>');  // 줄바꿈 처리
     fileElement.innerText = post.file ? `${post.file}` : '첨부파일 없음';
 
