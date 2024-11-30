@@ -23,7 +23,6 @@ async function displayBoardList() {
             <td class="col-4">${new Date(post.date).toLocaleDateString()}</td>
             <td class="col-5">${post.file ? 'O' : '-'}</td>
             <td class="col-6">${post.views}</td>
-            <td class="col-7"><button class="delete-button" onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
         boardList.appendChild(row); // 게시글 목록에 추가
@@ -144,10 +143,33 @@ async function displayPostDetails() {
 
 // 검색 기능
 async function search() {
-    const searchInput = document.getElementById('searchInput').value;
-    const response = await fetch(`${SERVER_URL}/posts/search?query=${searchInput}`);
-    const filteredPosts = await response.json();
-    displayFilteredBoardList(filteredPosts); // 검색된 게시글 표시
+    const searchInput = document.getElementById('searchInput').value.trim();
+    
+    // 검색어가 없을 경우 전체 게시글 표시
+    if (!searchInput) {
+        displayBoardList();
+        return;
+    }
+
+    try {
+        const response = await fetch(`${SERVER_URL}/posts/search?query=${encodeURIComponent(searchInput)}`);
+        if (!response.ok) {
+            throw new Error(`검색 요청 실패: ${response.statusText}`);
+        }
+
+        const filteredPosts = await response.json();
+
+        if (filteredPosts.length === 0) {
+            // 검색 결과가 없을 때 처리
+            const boardList = document.getElementById('boardList');
+            boardList.innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
+        } else {
+            displayFilteredBoardList(filteredPosts); // 검색된 게시글 표시
+        }
+    } catch (error) {
+        console.error('검색 중 오류 발생:', error);
+        alert('검색 중 문제가 발생했습니다. 다시 시도해주세요.');
+    }
 }
 
 // 검색된 게시글 목록 표시 함수
@@ -165,7 +187,6 @@ function displayFilteredBoardList(filteredPosts) {
             <td>${new Date(post.date).toLocaleDateString()}</td>
             <td>${post.file ? '첨부파일' : '-'}</td>
             <td>${post.views}</td>
-            <td><button onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
         boardList.appendChild(row); // 필터링된 게시글 목록에 추가
