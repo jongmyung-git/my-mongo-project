@@ -29,24 +29,27 @@ async function displayBoardList() {
     });
 }
 
-// 글쓰기 페이지 표시 함수
-function showWritePage() {
+// 글쓰기 페이지 준비 함수
+function prepareWritePage() {
     currentPostId = null; // 새로운 글을 작성할 때는 currentPostId 초기화
+    localStorage.setItem('prepareWritePage', 'true'); // 페이지 이동 플래그 설정
+}
 
-    window.location.href = "board2.html"; // 글쓰기 페이지로 이동
-
-    // 기존 내용 초기화
-    document.getElementById('authorName').value = '';
-    document.getElementById('title').value = '';
-    document.getElementById('content').value = '';
-    document.getElementById('fileUpload').value = '';
-    document.getElementById('fileNameDisplay').innerText = '';
+// 글쓰기 페이지 로드 시 초기화 함수
+function initializeWritePage() {
+    if (localStorage.getItem('prepareWritePage') === 'true') {
+        localStorage.removeItem('prepareWritePage');
+        document.getElementById('authorName').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('fileUpload').value = '';
+        document.getElementById('fileNameDisplay').innerText = '';
+    }
 }
 
 // 게시판 목록 페이지로 돌아가는 함수
 function showBoardListPage() {
     window.location.href = "board.html"; // 게시판 목록 페이지로 이동
-    displayBoardList(); // 게시글 목록 새로고침
 }
 
 // 게시글 저장 함수
@@ -201,6 +204,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.location.pathname.includes('board3.html')) {
         displayPostDetails(); // 글 상세 내용 표시
     }
+
+    // 글쓰기 페이지 초기화
+    if (window.location.pathname.includes('board2.html')) {
+        initializeWritePage(); // 글쓰기 페이지 초기화
+    }
 });
 
 // 페이지 넘김 기능
@@ -237,9 +245,7 @@ document.getElementById('fileUploadContainer').addEventListener('click', functio
 // 목록 버튼 클릭 시 게시판 목록으로 이동
 function goToList() {
     window.location.href = "board.html"; // 게시판 목록 페이지로 이동
-    displayBoardList(); // 게시글 목록 표시
 }
-
 
 
 
