@@ -128,8 +128,13 @@ async function displayPostDetails() {
     authorElement.innerText = `작성자: ${post.author}`;  // 수정: "Author: oo" 대신 "작성자: oo"
     contentElement.innerHTML = post.content.replace(/\n/g, '<br>');  // 줄바꿈 처리
     fileElement.innerText = post.file ? `${post.file}` : '첨부파일 없음';
-    dateElement.innerText = `등록일: ${new Date(post.date).toLocaleDateString()}`;  // 수정: 날짜 표시 형식 수정
-    viewsElement.innerText = `조회수: ${post.views}`;  // 수정: 조회수 표시 형식 수정
+
+    // 날짜를 'YYYY-MM-DD' 형식으로 표시
+    const postDate = new Date(post.date);
+    const formattedDate = postDate.getFullYear() + '-' + (postDate.getMonth() + 1).toString().padStart(2, '0') + '-' + postDate.getDate().toString().padStart(2, '0');
+    dateElement.innerText = formattedDate;  // 등록일: YYYY-MM-DD
+
+    viewsElement.innerText = post.views;  // 조회수: 숫자만 표시
 }
 
 // 검색 기능
