@@ -150,7 +150,7 @@ app.delete('/posts/:id', async (req, res) => {
   }
 });
 
-// 게시글 상세 조회 API (추가된 부분)
+// 게시글 상세 조회 API
 app.get('/posts/:id', async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);  // :id에 해당하는 게시글을 찾음
@@ -184,5 +184,6 @@ app.get('/posts/search', async (req, res) => {
 server.listen(port, () => {
   console.log(`Server running on ${process.env.PORT || 'http://localhost:5000'}`);
 });
+
 
 

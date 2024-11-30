@@ -46,7 +46,7 @@ function showWritePage() {
 
 // 게시판 목록 페이지로 돌아가는 함수
 function showBoardListPage() {
-    window.location.href = "board.html"; //게시판 목록 페이지로 이동
+    window.location.href = "board.html"; // 게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 새로고침
 }
 
@@ -205,9 +205,10 @@ document.getElementById('fileUploadContainer').addEventListener('click', functio
 
 // 목록 버튼 클릭 시 게시판 목록으로 이동
 function goToList() {
-    window.location.href = "board.html"; //게시판 목록 페이지로 이동
+    window.location.href = "board.html"; // 게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 
