@@ -22,11 +22,11 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 // MongoDB 연결 (환경 변수에서 URI 가져오기)
-const mongoURI = process.env.MONGODB_URI;
+const mongoURI = process.env.MONGO_URI; // 환경 변수 이름 통일
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoURI)
   .then(() => console.log('MongoDB 연결 성공'))
-  .catch((err) => console.log('MongoDB 연결 실패:', err));
+  .catch((err) => console.error('MongoDB 연결 실패:', err.message));
 
 // CORS 설정
 const clientUrl = process.env.CLIENT_URL; // 환경 변수에서 클라이언트 URL 가져오기
@@ -44,20 +44,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // **uploads 폴더가 없는 경우 생성**
-if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
-  fs.mkdirSync(path.join(__dirname, 'uploads'), { recursive: true });
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // Multer 설정 (파일 업로드용)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // 'uploads' 폴더에 저장
+    cb(null, uploadsDir); // 'uploads' 폴더에 저장
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // 고유 파일 이름 생성
+    cb(null, `${Date.now()}${path.extname(file.originalname)}`); // 고유 파일 이름 생성
   },
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 // Socket.io 연결 로그
 io.on('connection', (socket) => {
@@ -74,6 +75,7 @@ app.get('/posts', async (req, res) => {
     const posts = await Post.find().sort({ date: -1 }); // 최신 글 순 정렬
     res.json(posts);
   } catch (err) {
+    console.error('게시글 조회 중 오류:', err.message);
     res.status(500).send('Error retrieving posts');
   }
 });
@@ -99,6 +101,7 @@ app.post('/posts', upload.single('file'), async (req, res) => {
 
     res.status(201).json(newPost);
   } catch (err) {
+    console.error('게시글 작성 중 오류:', err.message);
     res.status(500).send('Error creating post');
   }
 });
@@ -117,6 +120,7 @@ app.put('/posts/:id', upload.single('file'), async (req, res) => {
     const updatedPost = await Post.findByIdAndUpdate(id, updateData, { new: true });
     res.json(updatedPost);
   } catch (err) {
+    console.error('게시글 수정 중 오류:', err.message);
     res.status(500).send('Error updating post');
   }
 });
@@ -136,6 +140,7 @@ app.put('/posts/:id/views', async (req, res) => {
 
     res.json(post);
   } catch (err) {
+    console.error('조회수 업데이트 중 오류:', err.message);
     res.status(500).send('Error updating views');
   }
 });
@@ -148,7 +153,7 @@ app.delete('/posts/:id', async (req, res) => {
 
     // 파일 삭제 처리
     if (post && post.file) {
-      const filePath = path.join(__dirname, 'uploads', post.file);
+      const filePath = path.join(uploadsDir, post.file);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
@@ -156,6 +161,7 @@ app.delete('/posts/:id', async (req, res) => {
 
     res.send('Post deleted');
   } catch (err) {
+    console.error('게시글 삭제 중 오류:', err.message);
     res.status(500).send('Error deleting post');
   }
 });
@@ -173,6 +179,7 @@ app.get('/posts/search', async (req, res) => {
 
     res.json(filteredPosts);
   } catch (err) {
+    console.error('게시글 검색 중 오류:', err.message);
     res.status(500).send('Error searching posts');
   }
 });
@@ -186,6 +193,7 @@ app.get('/posts/:id', async (req, res) => {
     }
     res.json(post);
   } catch (err) {
+    console.error('게시글 상세 조회 중 오류:', err.message);
     res.status(500).send('Error retrieving post');
   }
 });
@@ -194,6 +202,7 @@ app.get('/posts/:id', async (req, res) => {
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
 
 
 
