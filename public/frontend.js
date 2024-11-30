@@ -124,11 +124,11 @@ async function displayPostDetails() {
     const viewsElement = document.getElementById('postViews');
 
     titleElement.innerText = post.title;
-    authorElement.innerText = `${post.author}`;  // 수정: "Author: oo" 대신 "작성자: oo"
+    authorElement.innerText = `작성자: ${post.author}`;  // 수정: "Author: oo" 대신 "작성자: oo"
     contentElement.innerHTML = post.content;  // HTML 형식으로 내용 표시
     fileElement.innerText = post.file ? `${post.file}` : '첨부파일 없음';
-    dateElement.innerText = `${new Date(post.date).toLocaleDateString()}`;  // 수정: 날짜 표시 형식 수정
-    viewsElement.innerText = `${post.views}`;  // 수정: 조회수 표시 형식 수정
+    dateElement.innerText = `등록일: ${new Date(post.date).toLocaleDateString()}`;  // 수정: 날짜 표시 형식 수정
+    viewsElement.innerText = `조회수: ${post.views}`;  // 수정: 조회수 표시 형식 수정
 }
 
 // 검색 기능
@@ -207,6 +207,7 @@ function goToList() {
     window.location.href = "board.html"; //게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 
