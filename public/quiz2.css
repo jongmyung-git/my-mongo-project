@@ -4,7 +4,7 @@ body {
     padding: 0;
 
     font-family: "Nanum Gothic", sans-serif;
-    background-color: #f3efeb;
+    background-color: white;
     font-weight: 400;
     font-style: normal;
 
@@ -68,22 +68,24 @@ a {
 
 main {
     margin-top: 100px;
+    margin-bottom: 40px;
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    min-height: 100vh;
+    align-items: center; /* 세로 중앙 정렬 */
+    min-height: calc(100vh - 100px); /* 헤더 높이 제외한 화면 높이 */
 }
         /* 퀴즈 카드 스타일 */
         .quiz-container {
             margin-bottom: 50px;
             max-width: 600px;
             width: 90%;
-            height: 77%;
+            height: auto; /* 높이 자동 조정 */
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-top: 1px;
+            margin-top: 20px; /* 추가 여백 */
             text-align: center;
         }
         .quiz-title {
@@ -165,7 +167,8 @@ main {
 
 }
 .container {
-  text-align: center; /* 컨테이너의 내용을 가운데 정렬 */
+ text-align: center;
+ /* 컨테이너의 내용을 가운데 정렬 */
 }
 
 .top-div {
@@ -192,9 +195,6 @@ button {
     cursor: pointer;
     background-color: red;
 }
-
-
-
 
 
 .hidden {
