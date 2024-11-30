@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 
 // 정적 파일 제공
 const staticPath = path.join(__dirname, 'public', 'images');
-console.log(Serving static files from: ${staticPath});  // 디버깅용 로그
+console.log(`Serving static files from: ${staticPath}`);  // 디버깅용 로그
 app.use('/images', express.static(staticPath));  // /images 경로로 정적 파일 제공
 
 // 서버 설정 (http와 socket.io 통합)
@@ -182,7 +182,7 @@ app.get('/posts/search', async (req, res) => {
 
 // 서버 실행 (http 서버와 socket.io 연결)
 server.listen(port, () => {
-  console.log(Server running on ${process.env.PORT || 'http://localhost:5000'});
+  console.log(`Server running on ${process.env.PORT || 'http://localhost:5000'}`);
 });
 
 
