@@ -106,23 +106,29 @@ async function viewPost(id) {
 
     currentPostId = post._id;
 
-    // 상세 페이지로 이동
-    window.location.href = `board3.html?id=${post._id}`;
+    // 상세 페이지로 이동하고, 상세 페이지에서 해당 글 데이터를 표시
+    window.location.href = `board3.html?id=${post._id}`;  // 상세 페이지로 이동
 }
 
-// 게시글 수정 페이지로 이동 함수
-async function modifyPost() {
-    if (currentPostId) {
-        const response = await fetch(`${SERVER_URL}/posts/${currentPostId}`);
-        const post = await response.json();
+// 게시글 상세페이지에서 데이터를 표시하기 위한 함수
+async function displayPostDetails() {
+    const postId = new URLSearchParams(window.location.search).get('id');
+    const response = await fetch(`${SERVER_URL}/posts/${postId}`);
+    const post = await response.json();
 
-        document.getElementById('authorName').value = post.author;
-        document.getElementById('title').value = post.title;
-        document.getElementById('content').value = post.content;
-        document.getElementById('fileNameDisplay').innerText = post.file ? `파일명: ${post.file}` : '';
+    const titleElement = document.getElementById('postTitle');
+    const authorElement = document.getElementById('postAuthor');
+    const contentElement = document.getElementById('postContent');
+    const fileElement = document.getElementById('postFile');
+    const dateElement = document.getElementById('postDate');
+    const viewsElement = document.getElementById('postViews');
 
-        window.location.href = "board2.html"; // 수정 페이지로 이동
-    }
+    titleElement.innerText = post.title;
+    authorElement.innerText = `Author: ${post.author}`;
+    contentElement.innerHTML = post.content;  // HTML 형식으로 내용 표시
+    fileElement.innerText = post.file ? `첨부파일: ${post.file}` : '첨부파일 없음';
+    dateElement.innerText = `Date: ${new Date(post.date).toLocaleDateString()}`;
+    viewsElement.innerText = `Views: ${post.views}`;
 }
 
 // 검색 기능
@@ -158,6 +164,11 @@ function displayFilteredBoardList(filteredPosts) {
 // 페이지 초기화
 document.addEventListener("DOMContentLoaded", () => {
     displayBoardList(); // 페이지 로드 시 게시글 목록 표시
+
+    // 상세 페이지에서는 글 내용 표시
+    if (window.location.pathname.includes('board3.html')) {
+        displayPostDetails(); // 글 상세 내용 표시
+    }
 });
 
 // 페이지 넘김 기능
@@ -196,6 +207,7 @@ function goToList() {
     window.location.href = "board.html"; //게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 표시
 }
+
 
 
 
