@@ -6,32 +6,40 @@ let currentPostId; // 현재 보고 있는 글의 ID 저장 변수
 const SERVER_URL = 'https://my-mongo-project.onrender.com'; // 서버 주소
 
 // 게시글 목록 표시 함수
-async function displayBoardList() {
+async function displayPostDetails() {
     try {
-        const response = await fetch(`${SERVER_URL}/posts?page=${currentPage}`);
-        if (!response.ok) throw new Error('Failed to fetch posts');
+        const postId = new URLSearchParams(window.location.search).get('id');
+        
+        // 글 ID가 없을 경우 처리
+        if (!postId) {
+            alert('유효하지 않은 글 ID입니다.');
+            window.location.href = "board.html"; // 목록 페이지로 이동
+            return;
+        }
 
-        const posts = await response.json();
-        const boardList = document.getElementById('boardList');
-        boardList.innerHTML = ''; // 기존 목록 초기화
+        const response = await fetch(`${SERVER_URL}/posts/${postId}`);
+        
+        // API 호출 실패 처리
+        if (!response.ok) {
+            throw new Error(`Failed to fetch post details. Status: ${response.status}`);
+        }
 
-        posts.forEach((post, index) => {
-            const row = document.createElement('tr');
+        const post = await response.json();
 
-            row.innerHTML = `
-                <td class="col-1">${(currentPage - 1) * 10 + (index + 1)}</td>
-                <td class="col-2"><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
-                <td class="col-3">${post.author}</td>
-                <td class="col-4">${new Date(post.date).toLocaleDateString()}</td>
-                <td class="col-5">${post.file ? 'O' : '-'}</td>
-                <td class="col-6">${post.views}</td>
-            `;
+        // 상세 페이지 데이터 렌더링
+        document.getElementById('postTitle').innerText = post.title || '제목 없음';
+        document.getElementById('postAuthor').innerText = post.author || '익명';
+        document.getElementById('postContent').innerHTML = post.content.replace(/\n/g, '<br>') || '내용 없음';
+        document.getElementById('postFile').innerText = post.file ? post.file : '첨부파일 없음';
+        document.getElementById('postDate').innerText = new Date(post.date).toISOString().split('T')[0];
+        document.getElementById('postViews').innerText = post.views || 0;
 
-            boardList.appendChild(row);
-        });
+        // 조회수 증가 API 호출
+        await fetch(`${SERVER_URL}/posts/${postId}/views`, { method: 'PUT' });
     } catch (error) {
-        console.error('Error fetching board list:', error);
-        alert('게시글 목록을 불러오는 중 오류가 발생했습니다.');
+        console.error('Error displaying post details:', error);
+        alert('게시글 정보를 가져오는 중 오류가 발생했습니다.');
+        window.location.href = "board.html"; // 오류 발생 시 목록 페이지로 이동
     }
 }
 
@@ -149,6 +157,7 @@ async function displayPostDetails() {
 async function search() {
     const searchInput = document.getElementById('searchInput').value.trim();
 
+    // 검색어가 없을 경우 전체 목록 표시
     if (!searchInput) {
         displayBoardList();
         return;
@@ -156,10 +165,15 @@ async function search() {
 
     try {
         const response = await fetch(`${SERVER_URL}/posts/search?query=${encodeURIComponent(searchInput)}`);
-        if (!response.ok) throw new Error('Failed to fetch search results');
+        
+        // API 호출 실패 처리
+        if (!response.ok) {
+            throw new Error(`Failed to fetch search results. Status: ${response.status}`);
+        }
 
         const filteredPosts = await response.json();
 
+        // 검색 결과 없을 경우 처리
         if (filteredPosts.length === 0) {
             document.getElementById('boardList').innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
         } else {
@@ -182,10 +196,10 @@ function displayFilteredBoardList(filteredPosts) {
         row.innerHTML = `
             <td>${index + 1}</td>
             <td><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
-            <td>${post.author}</td>
+            <td>${post.author || '익명'}</td>
             <td>${new Date(post.date).toLocaleDateString()}</td>
             <td>${post.file ? '첨부파일' : '-'}</td>
-            <td>${post.views}</td>
+            <td>${post.views || 0}</td>
         `;
 
         boardList.appendChild(row);
