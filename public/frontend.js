@@ -29,19 +29,36 @@ async function displayBoardList() {
     });
 }
 
-// 글쓰기 페이지 표시 함수
-function showWritePage() {
-    currentPostId = null; // 새로운 글을 작성할 때는 currentPostId 초기화
+// 글쓰기 페이지 표시 함수 (수정 페이지로도 사용됨)
+async function showWritePage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
 
-    window.location.href = "board2.html"; // 글쓰기 페이지로 이동
+    if (postId) {
+        // 수정할 게시글 데이터를 서버에서 가져옴
+        const response = await fetch(`${SERVER_URL}/posts/${postId}`);
+        const post = await response.json();
 
-    // 기존 내용 초기화
-    document.getElementById('authorName').value = '';
-    document.getElementById('title').value = '';
-    document.getElementById('content').value = '';
-    document.getElementById('fileUpload').value = '';
-    document.getElementById('fileNameDisplay').innerText = '';
+        // 기존 게시글 데이터를 폼에 채움
+        document.getElementById('authorName').value = post.author;
+        document.getElementById('title').value = post.title;
+        document.getElementById('content').value = post.content;
+
+        // 첨부파일 정보 표시
+        if (post.file) {
+            document.getElementById('fileNameDisplay').innerText = `기존 첨부파일: ${post.file}`;
+        }
+        currentPostId = postId; // 수정 모드로 설정
+    } else {
+        // 새 글 작성 시 폼 초기화
+        document.getElementById('authorName').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('fileNameDisplay').innerText = '';
+        currentPostId = null; // 새 글 작성 모드
+    }
 }
+
 
 // 게시판 목록 페이지로 돌아가는 함수
 function showBoardListPage() {
@@ -80,16 +97,39 @@ async function savePost() {
 
     showBoardListPage(); // 게시글 목록 페이지로 돌아가기
 }
+// 게시글 수정 함수
+async function modifyPost() {
+    if (!currentPostId) {
+        alert('수정할 게시글이 선택되지 않았습니다.');
+        return;
+    }
 
-// 게시글 삭제 함수
-async function deletePost(id) {
-    if (confirm("정말 삭제하시겠습니까?")) {
-        await fetch(`${SERVER_URL}/posts/${id}`, {
-            method: 'DELETE'
-        });
-        showBoardListPage(); // 게시글 삭제 후 목록 갱신
+    // 작성 페이지로 이동하여 기존 게시글 데이터를 로드
+    window.location.href = `board2.html?id=${currentPostId}`;
+}
+
+
+// 상세 페이지에서 현재 게시글 삭제
+async function deleteCurrentPost() {
+    if (!currentPostId) {
+        alert('삭제할 게시글이 선택되지 않았습니다.');
+        return;
+    }
+
+    if (confirm('정말 삭제하시겠습니까?')) {
+        try {
+            await fetch(`${SERVER_URL}/posts/${currentPostId}`, {
+                method: 'DELETE',
+            });
+            alert('게시글이 삭제되었습니다.');
+            window.location.href = 'board.html'; // 목록 페이지로 이동
+        } catch (error) {
+            console.error('게시글 삭제 중 오류:', error);
+            alert('게시글 삭제에 실패했습니다.');
+        }
     }
 }
+
 
 // 게시글 상세보기 함수
 async function viewPost(id) {
@@ -141,72 +181,33 @@ async function displayPostDetails() {
     viewsElement.innerText = post.views;  // 조회수: 숫자만 표시
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 검색 버튼 이벤트 리스너 추가
-    const searchButton = document.querySelector('#searchButton');
-    searchButton.addEventListener('click', search);
-
-    // 검색된 게시글 목록 표시
-    function displayFilteredBoardList(filteredPosts) {
-        const boardList = document.getElementById('boardList');
-        boardList.innerHTML = ''; // 기존 게시글 목록 초기화
-
-        if (filteredPosts.length === 0) {
-            boardList.innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
-            return;
-        }
-
-        filteredPosts.forEach((post, index) => {
-            const row = document.createElement('tr');
-
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
-                <td>${post.author}</td>
-                <td>${new Date(post.date).toLocaleDateString()}</td>
-                <td>${post.file ? '첨부파일' : '-'}</td>
-                <td>${post.views}</td>
-            `;
-
-            boardList.appendChild(row);
-        });
-    }
-
-    // 임시로 글보기 함수 정의 (동작은 서버/프론트에서 구현 필요)
-    window.viewPost = (id) => {
-        console.log('게시글 보기:', id);
-        alert(`게시글 ID: ${id}`);
-    };
-});
-
-// 검색 기능을 글로벌 스코프에 정의
+// 검색 기능
 async function search() {
-    try {
-        const searchInput = document.getElementById('searchInput').value.trim();
-        if (!searchInput) {
-            alert('검색어를 입력하세요.');
-            return;
-        }
+    const searchInput = document.getElementById('searchInput').value;
+    const response = await fetch(`${SERVER_URL}/posts/search?query=${searchInput}`);
+    const filteredPosts = await response.json();
+    displayFilteredBoardList(filteredPosts); // 검색된 게시글 표시
+}
 
-        console.log('검색어:', searchInput);
+// 검색된 게시글 목록 표시 함수
+function displayFilteredBoardList(filteredPosts) {
+    const boardList = document.getElementById('boardList');
+    boardList.innerHTML = ''; // 기존 목록 초기화
 
-        // API 호출
-        const response = await fetch(`${SERVER_URL}/posts/search?query=${encodeURIComponent(searchInput)}`);
-        console.log('응답 상태:', response.status);
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-        }
-
-        const filteredPosts = await response.json();
-        console.log('검색 결과:', filteredPosts);
-
-        // 게시글 표시
-        displayFilteredBoardList(filteredPosts);
-    } catch (error) {
-        console.error('검색 중 오류 발생:', error);
-        alert('검색 중 문제가 발생했습니다. 나중에 다시 시도해주세요.');
-    }
+    filteredPosts.forEach((post, index) => {
+        const row = document.createElement('tr');
+        
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
+            <td>${post.author}</td>
+            <td>${new Date(post.date).toLocaleDateString()}</td>
+            <td>${post.file ? '첨부파일' : '-'}</td>
+            <td>${post.views}</td>
+        `;
+        
+        boardList.appendChild(row); // 필터링된 게시글 목록에 추가
+    });
 }
 
 // 페이지 초기화
