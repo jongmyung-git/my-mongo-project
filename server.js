@@ -27,11 +27,11 @@ mongoose.connect(mongoURI)
     .then(() => console.log('MongoDB 연결 성공'))
     .catch(err => console.log('MongoDB 연결 실패:', err));
 
-// CORS 설정 (서버와 클라이언트가 동일한 도메인일 경우)
-const clientUrl = process.env.CLIENT_URL || 'https://my-mongo-project.onrender.com';  // .env에서 클라이언트 URL 가져오기
+// CORS 설정 (클라이언트 URL을 환경 변수로 설정)
+const clientUrl = process.env.CLIENT_URL;  // .env에서 클라이언트 URL 가져오기
 app.use(cors({
-  origin: clientUrl,  // 클라이언트 URL을 정확히 설정
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: clientUrl,  // 클라이언트의 URL만 허용
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true  // 쿠키 등 인증 정보를 허용하려면 true로 설정
 }));
 
