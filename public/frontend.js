@@ -143,38 +143,8 @@ async function displayPostDetails() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // 검색 버튼 이벤트 리스너 추가
-    const searchButton = document.querySelector('.search-box button:first-child');
+    const searchButton = document.querySelector('#searchButton');
     searchButton.addEventListener('click', search);
-
-    // 검색 기능
-    async function search() {
-        try {
-            const searchInput = document.getElementById('searchInput').value.trim();
-            if (!searchInput) {
-                alert('검색어를 입력하세요.');
-                return;
-            }
-
-            console.log('검색어:', searchInput);
-
-            // API 호출
-            const response = await fetch(`${SERVER_URL}/posts/search?query=${encodeURIComponent(searchInput)}`);
-            console.log('응답 상태:', response.status);
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.statusText}`);
-            }
-
-            const filteredPosts = await response.json();
-            console.log('검색 결과:', filteredPosts);
-
-            // 게시글 표시
-            displayFilteredBoardList(filteredPosts);
-        } catch (error) {
-            console.error('검색 중 오류 발생:', error);
-            alert('검색 중 문제가 발생했습니다. 나중에 다시 시도해주세요.');
-        }
-    }
 
     // 검색된 게시글 목록 표시
     function displayFilteredBoardList(filteredPosts) {
@@ -208,6 +178,36 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(`게시글 ID: ${id}`);
     };
 });
+
+// 검색 기능을 글로벌 스코프에 정의
+async function search() {
+    try {
+        const searchInput = document.getElementById('searchInput').value.trim();
+        if (!searchInput) {
+            alert('검색어를 입력하세요.');
+            return;
+        }
+
+        console.log('검색어:', searchInput);
+
+        // API 호출
+        const response = await fetch(`${SERVER_URL}/posts/search?query=${encodeURIComponent(searchInput)}`);
+        console.log('응답 상태:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const filteredPosts = await response.json();
+        console.log('검색 결과:', filteredPosts);
+
+        // 게시글 표시
+        displayFilteredBoardList(filteredPosts);
+    } catch (error) {
+        console.error('검색 중 오류 발생:', error);
+        alert('검색 중 문제가 발생했습니다. 나중에 다시 시도해주세요.');
+    }
+}
 
 // 페이지 초기화
 document.addEventListener("DOMContentLoaded", () => {
