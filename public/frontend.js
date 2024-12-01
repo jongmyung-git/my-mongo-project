@@ -23,107 +23,113 @@ async function displayBoardList() {
             <td class="col-4">${new Date(post.date).toLocaleDateString()}</td>
             <td class="col-5">${post.file ? 'O' : '-'}</td>
             <td class="col-6">${post.views}</td>
-            <td class="col-7"><button class="delete-button" onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
         boardList.appendChild(row); // 게시글 목록에 추가
     });
 }
 
-// 글쓰기 페이지 표시 함수
-function showWritePage() {
-    currentPostId = null; // 새로운 글을 작성할 때는 currentPostId 초기화
+// 글쓰기 페이지 표시 함수 (수정 페이지로도 사용됨)
+async function showWritePage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
 
-    window.location.href = "board2.html"; // 글쓰기 페이지로 이동
+    if (postId) {
+        // 수정할 게시글 데이터를 서버에서 가져옴
+        const response = await fetch(`${SERVER_URL}/posts/${postId}`);
+        const post = await response.json();
 
-    // 기존 내용 초기화
-    document.getElementById('authorName').value = '';
-    document.getElementById('title').value = '';
-    document.getElementById('content').value = '';
-    document.getElementById('fileUpload').value = '';
-    document.getElementById('fileNameDisplay').innerText = '';
+        // 기존 게시글 데이터를 폼에 채움
+        document.getElementById('authorName').value = post.author;
+        document.getElementById('title').value = post.title;
+        document.getElementById('content').value = post.content;
+
+        // 첨부파일 정보 표시
+        if (post.file) {
+            document.getElementById('fileNameDisplay').innerText = `기존 첨부파일: ${post.file}`;
+        }
+        currentPostId = postId; // 수정 모드로 설정
+    } else {
+        // 새 글 작성 시 폼 초기화
+        document.getElementById('authorName').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('fileNameDisplay').innerText = '';
+        currentPostId = null; // 새 글 작성 모드
+    }
 }
+
 
 // 게시판 목록 페이지로 돌아가는 함수
 function showBoardListPage() {
     window.location.href = "board.html"; // 게시판 목록 페이지로 이동
     displayBoardList(); // 게시글 목록 새로고침
 }
-// 게시글 저장 함수 수정
+
+// 게시글 저장 함수
 async function savePost() {
     const author = document.getElementById('authorName').value;
     const title = document.getElementById('title').value;
     const content = document.getElementById('content').value;
-    const password = prompt("비밀번호를 설정하세요:");
-
-    if (!password) {
-        alert("비밀번호를 설정해야 합니다.");
-        return;
-    }
-
+    const fileInput = document.getElementById('fileUpload');
+    
     const formData = new FormData();
     formData.append('author', author);
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('password', password); // 비밀번호 추가
+    if (fileInput.files.length > 0) {
+        formData.append('file', fileInput.files[0]);
+    }
 
-    // 나머지 코드 (기존 작성과 동일)
     if (currentPostId) {
+        // 수정 요청
         await fetch(`${SERVER_URL}/posts/${currentPostId}`, {
             method: 'PUT',
             body: formData
         });
     } else {
+        // 새 글 작성
         await fetch(`${SERVER_URL}/posts`, {
             method: 'POST',
             body: formData
         });
     }
 
-    showBoardListPage(); // 게시판 목록 페이지로 돌아가기
+    showBoardListPage(); // 게시글 목록 페이지로 돌아가기
 }
-
-
-// 게시글 삭제 함수
-async function deletePost(id) {
-    if (confirm("정말 삭제하시겠습니까?")) {
-        await fetch(`${SERVER_URL}/posts/${id}`, {
-            method: 'DELETE'
-        });
-        showBoardListPage(); // 게시글 삭제 후 목록 갱신
-    }
-}
-
-// 게시글 삭제 함수 수정
-async function deletePost(id) {
-    const password = prompt("비밀번호를 입력하세요:");
-    if (!password) {
-        alert("비밀번호가 입력되지 않았습니다.");
+// 게시글 수정 함수
+async function modifyPost() {
+    if (!currentPostId) {
+        alert('수정할 게시글이 선택되지 않았습니다.');
         return;
     }
 
-// 서버에 비밀번호와 함께 삭제 요청
-    try {
-        const response = await fetch(`${SERVER_URL}/posts/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password })
-        });
+    // 작성 페이지로 이동하여 기존 게시글 데이터를 로드
+    window.location.href = `board2.html?id=${currentPostId}`;
+}
 
-        if (response.ok) {
-            alert("게시물이 성공적으로 삭제되었습니다.");
-            showBoardListPage(); // 목록 갱신
-        } else {
-            const error = await response.text();
-            alert(`삭제 실패: ${error}`);
+
+// 상세 페이지에서 현재 게시글 삭제
+async function deleteCurrentPost() {
+    if (!currentPostId) {
+        alert('삭제할 게시글이 선택되지 않았습니다.');
+        return;
+    }
+
+    if (confirm('정말 삭제하시겠습니까?')) {
+        try {
+            await fetch(`${SERVER_URL}/posts/${currentPostId}`, {
+                method: 'DELETE',
+            });
+            alert('게시글이 삭제되었습니다.');
+            window.location.href = 'board.html'; // 목록 페이지로 이동
+        } catch (error) {
+            console.error('게시글 삭제 중 오류:', error);
+            alert('게시글 삭제에 실패했습니다.');
         }
-    } catch (error) {
-        alert("서버 요청에 실패했습니다.");
-        console.error(error);
     }
 }
+
 
 // 게시글 상세보기 함수
 async function viewPost(id) {
@@ -198,7 +204,6 @@ function displayFilteredBoardList(filteredPosts) {
             <td>${new Date(post.date).toLocaleDateString()}</td>
             <td>${post.file ? '첨부파일' : '-'}</td>
             <td>${post.views}</td>
-            <td><button onclick="deletePost('${post._id}')">삭제</button></td>
         `;
         
         boardList.appendChild(row); // 필터링된 게시글 목록에 추가
