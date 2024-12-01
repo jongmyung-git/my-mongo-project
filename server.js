@@ -163,20 +163,24 @@ app.get('/posts/:id', async (req, res) => {
   }
 });
 
-// 검색 기능 API
+
+// 검색 API
 app.get('/posts/search', async (req, res) => {
   try {
-    const query = req.query.query;
-    const filteredPosts = await Post.find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { content: { $regex: query, $options: 'i' } }
-      ]
-    });
+      const query = req.query.query || ''; // 검색어가 없을 경우 빈 문자열로 처리
+      console.log('검색어:', query);
 
-    res.json(filteredPosts);
+      const filteredPosts = await Post.find({
+          $or: [
+              { title: { $regex: query, $options: 'i' } },   // 제목에서 검색
+              { content: { $regex: query, $options: 'i' } } // 내용에서 검색
+          ],
+      }).sort({ date: -1 }); // 최신순 정렬
+
+      res.json(filteredPosts);
   } catch (err) {
-    res.status(500).send('Error searching posts');
+      console.error('검색 오류:', err);
+      res.status(500).send('검색 중 문제가 발생했습니다.');
   }
 });
 

@@ -141,34 +141,73 @@ async function displayPostDetails() {
     viewsElement.innerText = post.views;  // 조회수: 숫자만 표시
 }
 
-// 검색 기능
-async function search() {
-    const searchInput = document.getElementById('searchInput').value;
-    const response = await fetch(`${SERVER_URL}/posts/search?query=${searchInput}`);
-    const filteredPosts = await response.json();
-    displayFilteredBoardList(filteredPosts); // 검색된 게시글 표시
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // 검색 버튼 이벤트 리스너 추가
+    const searchButton = document.querySelector('.search-box button:first-child');
+    searchButton.addEventListener('click', search);
 
-// 검색된 게시글 목록 표시 함수
-function displayFilteredBoardList(filteredPosts) {
-    const boardList = document.getElementById('boardList');
-    boardList.innerHTML = ''; // 기존 목록 초기화
+    // 검색 기능
+    async function search() {
+        try {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            if (!searchInput) {
+                alert('검색어를 입력하세요.');
+                return;
+            }
 
-    filteredPosts.forEach((post, index) => {
-        const row = document.createElement('tr');
-        
-        row.innerHTML = `
-            <td>${index + 1}</td>
-            <td><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
-            <td>${post.author}</td>
-            <td>${new Date(post.date).toLocaleDateString()}</td>
-            <td>${post.file ? '첨부파일' : '-'}</td>
-            <td>${post.views}</td>
-        `;
-        
-        boardList.appendChild(row); // 필터링된 게시글 목록에 추가
-    });
-}
+            console.log('검색어:', searchInput);
+
+            // API 호출
+            const response = await fetch(`${SERVER_URL}/posts/search?query=${encodeURIComponent(searchInput)}`);
+            console.log('응답 상태:', response.status);
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            const filteredPosts = await response.json();
+            console.log('검색 결과:', filteredPosts);
+
+            // 게시글 표시
+            displayFilteredBoardList(filteredPosts);
+        } catch (error) {
+            console.error('검색 중 오류 발생:', error);
+            alert('검색 중 문제가 발생했습니다. 나중에 다시 시도해주세요.');
+        }
+    }
+
+    // 검색된 게시글 목록 표시
+    function displayFilteredBoardList(filteredPosts) {
+        const boardList = document.getElementById('boardList');
+        boardList.innerHTML = ''; // 기존 게시글 목록 초기화
+
+        if (filteredPosts.length === 0) {
+            boardList.innerHTML = '<tr><td colspan="6">검색 결과가 없습니다.</td></tr>';
+            return;
+        }
+
+        filteredPosts.forEach((post, index) => {
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td><a href="#" onclick="event.preventDefault(); viewPost('${post._id}')">${post.title}</a></td>
+                <td>${post.author}</td>
+                <td>${new Date(post.date).toLocaleDateString()}</td>
+                <td>${post.file ? '첨부파일' : '-'}</td>
+                <td>${post.views}</td>
+            `;
+
+            boardList.appendChild(row);
+        });
+    }
+
+    // 임시로 글보기 함수 정의 (동작은 서버/프론트에서 구현 필요)
+    window.viewPost = (id) => {
+        console.log('게시글 보기:', id);
+        alert(`게시글 ID: ${id}`);
+    };
+});
 
 // 페이지 초기화
 document.addEventListener("DOMContentLoaded", () => {
