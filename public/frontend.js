@@ -181,15 +181,14 @@ async function displayPostDetails() {
     viewsElement.innerText = post.views;  // 조회수: 숫자만 표시
 }
 
-// 검색 기능
 async function search() {
     const searchInput = document.getElementById('searchInput').value;
     const response = await fetch(`${SERVER_URL}/posts/search?query=${searchInput}`);
     const filteredPosts = await response.json();
-    displayFilteredBoardList(filteredPosts); // 검색된 게시글 표시
+    
+    displayFilteredBoardList(filteredPosts); // 검색된 게시글만 표시
 }
 
-// 검색된 게시글 목록 표시 함수
 function displayFilteredBoardList(filteredPosts) {
     const boardList = document.getElementById('boardList');
     boardList.innerHTML = ''; // 기존 목록 초기화
